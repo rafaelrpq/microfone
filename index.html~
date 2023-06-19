@@ -1,116 +1,117 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Reprodução de Áudio em Tempo Real</title>
-  <meta charset="utf-8">
-  <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #666;
-    }
-
-    audio {
-        display: none;
-    }
-
-    button {
-        margin: 10px;
-        height: 100px;
-        width: 100px;
-        border: 3px solid rgba(0,0,0,0.3);
-        border-radius: 7px;
-        cursor: pointer;
-        color: #fff;
-        background-color: #0a0;
-        font-weight: bold;
-        box-shadow: 5px 5px 3px rgba(0,0,0,0.7);
-    }
-
-    button:active {
-        box-shadow: none
-    }
-
-    .playing {
-        background-color: #a00;
-    }
-  </style>
-</head>
-<body>
-  <button id="startButton">Iniciar Reprodução</button>
-  <!--<button id="stopButton">Parar Reprodução</button>-->
-  <audio id="audioPlayer"></audio>
-
-  <script>
-    let audioContext;
-    let audioStream;
-    let scriptNode;
-
-    let playback = false;
-
-    const startButton = document.getElementById('startButton');
-    const stopButton = document.getElementById('stopButton');
-    const audioPlayer = document.getElementById('audioPlayer');
-
-    startButton.addEventListener('click', playbackControl);
-    stopButton.addEventListener('click', stopPlayback);
-
-    function startPlayback() {
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(function(stream) {
-          audioStream = stream;
-          audioContext = new AudioContext();
-          const input = audioContext.createMediaStreamSource(stream);
-
-          const bufferSize = 2048;
-          scriptNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
-
-          scriptNode.onaudioprocess = function(audioProcessingEvent) {
-            const inputBuffer = audioProcessingEvent.inputBuffer;
-            const outputBuffer = audioProcessingEvent.outputBuffer;
-
-            for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
-              const inputData = inputBuffer.getChannelData(channel);
-              const outputData = outputBuffer.getChannelData(channel);
-
-              for (let i = 0; i < inputBuffer.length; i++) {
-                outputData[i] = inputData[i];
-              }
+    <head>
+        <title>Reprodução de Áudio em Tempo Real</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            html {
+                font-size: 62.5%;
             }
-          };
 
-          input.connect(scriptNode);
-          scriptNode.connect(audioContext.destination);
+            body {
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #666;
+            }
 
-          //startButton.disabled = true;
-          // stopButton.disabled = false;
-        })
-        .catch(function(err) {
-          console.log('Ocorreu um erro ao acessar o microfone: ' + err);
-          alert ('Ocorreu um erro ao acessar o microfone: ' + err);
-        });
-    }
+            audio {
+                display: none;
+            }
 
-    function stopPlayback() {
-      audioStream.getTracks().forEach(function(track) {
-        track.stop();
-      });
-      audioContext.close();
-      scriptNode.disconnect();
-      startButton.disabled = false;
-      stopButton.disabled = true;
-    }
+            button {
+                margin: 1rem;
+                height: 20rem;
+                width: 20rem;
+                font-size: 2.4rem;
+                border: .5rem outset rgba(0,0,0,0.3);
+                border-radius: 1.5rem;
+                cursor: pointer;
+                color: #fff;
+                background-color: #0a0;
+                font-weight: bold;
+                box-shadow: .5rem .5rem .5rem rgba(0,0,0,0.7);
+            }
 
-    function playbackControl () {
-        startButton.innerHTML = (playback) ? 'Iniciar Reprodução' : 'Parar Reprodução'
-        playback = !playback;
-        startButton.className = (playback) ? 'playing' : ''
-        return (playback) ? startPlayback() : stopPlayback ()
-    }
-  </script>
-</body>
+            button:active {
+                box-shadow: none;
+            }
+
+            .playing {
+                background-color: #a00;
+            }
+        </style>
+    </head>
+    <body>
+        <button id="startButton">Iniciar Reprodução</button>
+        <audio id="audioPlayer"></audio>
+
+        <script>
+            let audioContext;
+            let audioStream;
+            let scriptNode;
+
+            let playback = false;
+
+            const startButton = document.getElementById ('startButton');
+            // const stopButton = document.getElementById ('stopButton');
+            const audioPlayer = document.getElementById ('audioPlayer');
+
+            startButton.addEventListener ('click', playbackControl);
+            // stopButton.addEventListener ('click', stopPlayback);
+
+            function startPlayback () {
+                navigator.mediaDevices.getUserMedia ({ audio: true })
+                .then (function (stream) {
+                    audioStream = stream;
+                    audioContext = new AudioContext ();
+                    const input = audioContext.createMediaStreamSource (stream);
+
+                    const bufferSize = 2048;
+                    scriptNode = audioContext.createScriptProcessor (bufferSize, 1, 1);
+
+                    scriptNode.onaudioprocess = function  (audioProcessingEvent) {
+                        const inputBuffer = audioProcessingEvent.inputBuffer;
+                        const outputBuffer = audioProcessingEvent.outputBuffer;
+
+                        for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+                            const inputData = inputBuffer.getChannelData (channel);
+                            const outputData = outputBuffer.getChannelData (channel);
+
+                            for (let i = 0; i < inputBuffer.length; i++) {
+                                outputData[i] = inputData[i];
+                            }
+                        }
+                    };
+
+                    input.connect (scriptNode);
+                    scriptNode.connect (audioContext.destination);
+                })
+                .catch  (function (err) {
+                    console.log ('Ocorreu um erro ao acessar o microfone: ' + err);
+                    alert ('Ocorreu um erro ao acessar o microfone: ' + err);
+                });
+            }
+
+            function stopPlayback () {
+                audioStream.getTracks ().forEach (function (track) {
+                    track.stop ();
+                });
+                audioContext.close ();
+                scriptNode.disconnect ();
+                startButton.disabled = false;
+            }
+
+            function playbackControl () {
+                playback = !playback;
+                startButton.innerHTML = (playback) ? 'Parar Reprodução' : 'Iniciar Reprodução'
+                startButton.className = (playback) ? 'playing' : ''
+                return (playback) ? startPlayback () : stopPlayback  ()
+            }
+        </script>
+    </body>
 </html>
 

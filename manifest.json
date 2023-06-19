@@ -24,7 +24,7 @@
     "display": "standalone",
     "lang": "pt",
     "dir": "ltr",
-    "orientation": "landscape",
+    "orientation": "portrait",
     "display_override": [
         "standalone"
     ],

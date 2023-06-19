@@ -1,0 +1,34 @@
+{
+    "name": "Microfone",
+    "short_name": "Microfone",
+    "icons": [{
+        "src": "./res/icons/128.png",
+        "sizes": "128x128",
+        "type": "image/png"
+    },{
+        "src": "./res/icons/256.png",
+        "sizes": "256x256",
+        "type": "image/png",
+        "purpose": "maskable"
+    },{
+        "src": "./res/icons/512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }],
+    "id": "falador",
+    "scope": "./",
+    "start_url": "./",
+    "description": "Reprodução de Áudio em Tempo Real",
+    "background_color": "#666",
+    "theme_color": "#666",
+    "display": "standalone",
+    "lang": "pt",
+    "dir": "ltr",
+    "orientation": "landscape",
+    "display_override": [
+        "standalone"
+    ],
+    "categories": [
+        "utilities"
+    ]
+}

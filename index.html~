@@ -38,6 +38,7 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                user-select: none;
             }
 
             button:active {
@@ -72,7 +73,12 @@
             const audioPlayer = document.getElementById ('audioPlayer');
 
             startButton.addEventListener ('click', playbackControl);
-            // stopButton.addEventListener ('click', stopPlayback);
+            startButton.addEventListener ('contextmenu', (e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    e.stopImmediatePropagation();
+                    return false;
+            });
 
             function startPlayback () {
                 navigator.mediaDevices.getUserMedia ({ audio: true })
@@ -117,6 +123,7 @@
             }
 
             function playbackControl () {
+                navigator.vibrate (50)
                 playback = !playback;
                 img.src = (playback) ? 'res/microphone-slash-duotone.svg' : 'res/microphone-duotone.svg'
                  label.innerHTML = (playback) ? 'Parar Reprodução' : 'Iniciar Reprodução'

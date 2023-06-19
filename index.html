@@ -34,6 +34,10 @@
                 background-color: #0a0;
                 font-weight: bold;
                 box-shadow: .5rem .5rem .5rem rgba(0,0,0,0.7);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
             }
 
             button:active {
@@ -43,10 +47,14 @@
             .playing {
                 background-color: #a00;
             }
+
+            img {
+                height : 50%;
+            }
         </style>
     </head>
     <body>
-        <button id="startButton">Iniciar Reprodução</button>
+        <button id="startButton"><img src="res/microphone-duotone.svg"><label>Iniciar Reprodução</label></button>
         <audio id="audioPlayer"></audio>
 
         <script>
@@ -55,6 +63,9 @@
             let scriptNode;
 
             let playback = false;
+            let img = document.querySelector ('img');
+            let label = document.querySelector ('label')
+
 
             const startButton = document.getElementById ('startButton');
             // const stopButton = document.getElementById ('stopButton');
@@ -107,7 +118,8 @@
 
             function playbackControl () {
                 playback = !playback;
-                startButton.innerHTML = (playback) ? 'Parar Reprodução' : 'Iniciar Reprodução'
+                img.src = (playback) ? 'res/microphone-slash-duotone.svg' : 'res/microphone-duotone.svg'
+                 label.innerHTML = (playback) ? 'Parar Reprodução' : 'Iniciar Reprodução'
                 startButton.className = (playback) ? 'playing' : ''
                 return (playback) ? startPlayback () : stopPlayback  ()
             }

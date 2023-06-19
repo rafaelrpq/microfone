@@ -107,7 +107,7 @@
 
             function playbackControl () {
                 playback = !playback;
-                startButton.innerHTML = (playback) ? 'Iniciar Reprodução' : 'Parar Reprodução'
+                startButton.innerHTML = (playback) ? 'Parar Reprodução' : 'Iniciar Reprodução'
                 startButton.className = (playback) ? 'playing' : ''
                 return (playback) ? startPlayback () : stopPlayback  ()
             }

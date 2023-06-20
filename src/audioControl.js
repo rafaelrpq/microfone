@@ -42,8 +42,16 @@ function startPlayback () {
             }
         };
 
-        input.connect (scriptNode);
-        scriptNode.connect (audioContext.destination);
+        // input.connect (scriptNode);
+        // scriptNode.connect (audioContext.destination);
+
+
+        input.connect(scriptNode);
+
+        audioOutput = audioContext.createMediaStreamDestination();
+        scriptNode.connect(audioOutput);
+
+        audioPlayer.srcObject = audioOutput.stream;
     })
     .catch  (function (err) {
         console.log ('Ocorreu um erro ao acessar o microfone: ' + err);

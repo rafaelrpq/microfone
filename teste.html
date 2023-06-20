@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reprodução de Áudio em Tempo Real com Saída Bluetooth</title>
+</head>
+<body>
+  <button id="startButton">Iniciar Reprodução</button>
+  <button id="stopButton">Parar Reprodução</button>
+  <audio id="audioPlayer" controls></audio>
+
+  <script>
+    let audioContext;
+    let audioStream;
+    let scriptNode;
+    let audioOutput;
+
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
+    const audioPlayer = document.getElementById('audioPlayer');
+
+    startButton.addEventListener('click', startPlayback);
+    stopButton.addEventListener('click', stopPlayback);
+
+    function startPlayback() {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+          audioStream = stream;
+          audioContext = new AudioContext();
+          const input = audioContext.createMediaStreamSource(stream);
+
+          const bufferSize = 2048;
+          scriptNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+          scriptNode.onaudioprocess = function(audioProcessingEvent) {
+            const inputBuffer = audioProcessingEvent.inputBuffer;
+            const outputBuffer = audioProcessingEvent.outputBuffer;
+
+            for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+              const inputData = inputBuffer.getChannelData(channel);
+              const outputData = outputBuffer.getChannelData(channel);
+
+              // Passa os dados de entrada para os dados de saída (reprodução em tempo real)
+              for (let i = 0; i < inputBuffer.length; i++) {
+                outputData[i] = inputData[i];
+              }
+            }
+          };
+
+          // Conecta o input ao scriptNode
+          input.connect(scriptNode);
+
+          // Cria uma nova saída de áudio usando a API Web Audio
+          audioOutput = audioContext.createMediaStreamDestination();
+          scriptNode.connect(audioOutput);
+
+          // Conecta a nova saída de áudio ao elemento de áudio
+          audioPlayer.srcObject = audioOutput.stream;
+
+          startButton.disabled = true;
+          stopButton.disabled = false;
+        })
+        .catch(function(err) {
+          console.log('Ocorreu um erro ao acessar o microfone: ' + err);
+        });
+    }
+
+    function stopPlayback() {
+      audioStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+      audioContext.close();
+      scriptNode.disconnect();
+      audioOutput.disconnect();
+      audioPlayer.srcObject = null;
+      startButton.disabled = false;
+      stopButton.disabled = true;
+    }
+  </script>
+</body>
+</html>

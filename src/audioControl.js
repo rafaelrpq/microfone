@@ -10,7 +10,7 @@ let label = document.querySelector ('label')
 
 
 const startButton = document.getElementById ('startButton');
-const audioPlayer = document.getElementById ('audioPlayer');
+// const audioPlayer = document.getElementById ('audioPlayer');
 
 startButton.addEventListener ('click', playbackControl);
 startButton.addEventListener ('contextmenu', (e) => {
@@ -46,6 +46,8 @@ startButton.addEventListener ('contextmenu', (e) => {
 
 //         input.connect (scriptNode);
 //         scriptNode.connect (audioContext.destination);
+//         var audioPlayer = document.createElement ('audio')
+//         audioPlayer.play ()
 //     })
 //     .catch  (function (err) {
 //         console.log ('Ocorreu um erro ao acessar o microfone: ' + err);
@@ -72,21 +74,18 @@ function startPlayback() {
           const inputData = inputBuffer.getChannelData(channel);
           const outputData = outputBuffer.getChannelData(channel);
 
-          // Passa os dados de entrada para os dados de saída (reprodução em tempo real)
           for (let i = 0; i < inputBuffer.length; i++) {
             outputData[i] = inputData[i];
           }
         }
       };
 
-      // Conecta o input ao scriptNode
       input.connect(scriptNode);
 
-      // Cria uma nova saída de áudio usando a API Web Audio
       audioOutput = audioContext.createMediaStreamDestination();
       scriptNode.connect(audioOutput);
 
-      // Conecta a nova saída de áudio ao elemento de áudio
+      var audioPlayer = document.createElement ('audio')
       audioPlayer.srcObject = audioOutput.stream;
       audioPlayer.play ()
     })
@@ -101,7 +100,7 @@ function stopPlayback () {
     });
     audioContext.close ();
     scriptNode.disconnect ();
-    audioPlayer.srcObject = null;
+    // audioPlayer.srcObject = null;
 }
 
 function playbackControl () {
